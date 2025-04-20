@@ -582,12 +582,18 @@ async def process_document_with_ai(file_path: str, filename: str, client: str):
     except Exception as e:
         logger.error(f"Error in AI document processing: {str(e)}")
         # final safe fallback
+        # -------------------
+        # precompute a clean slug so the f‑string has no backslashes
+        clean_client = re.sub(r"\s+", "_", client.lower())
+        year = datetime.datetime.now().year
+        suggested_name = f"{clean_client}_{year}_unknown.pdf"
+
         return {
             "doc_type": "Unknown",
             "extracted_data": "Error in AI processing",
             "doc_category": "client",
             "suggested_storage": "cloud",
-            "suggested_name": f"{re.sub(r'\\s+', '_', client.lower())}_{datetime.datetime.now().year}_unknown.pdf",
+            "suggested_name": suggested_name,
         }
 
 
